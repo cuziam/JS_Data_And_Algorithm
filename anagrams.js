@@ -33,20 +33,20 @@ for key in string으로 방금 생성한 객체에 문자 빈도 수 저장.
 for key of counter로 counter1과 counter2의 문자 빈도가 일치하는지 확인한다.
 */
 
-str1 = `Korea`;
-str2 = `oreaK`;
-str3 = `level`;
-str4 = `llevv`;
+const str1 = `Korea`;
+const str2 = `oreaK`;
+const str3 = `level`;
+const str4 = `llevv`;
 
 function isAnagram(str1, str2) {
-  //input 문자열의 길이가 다르면 false
+  // input 문자열의 길이가 다르면 false
   if (str1.length !== str2.length) {
     return false;
   }
-  //input 문자열에서, 각 문자열의 문자 빈도 수 카운트를 저장할 객체 2개 생성
-  let strCounter1 = {};
-  let strCounter2 = {};
-  //for key in string으로 방금 생성한 객체에 문자 빈도 수 저장.
+  // input 문자열에서, 각 문자열의 문자 빈도 수 카운트를 저장할 객체 2개 생성
+  const strCounter1 = {};
+  const strCounter2 = {};
+  // for key in string으로 방금 생성한 객체에 문자 빈도 수 저장.
   for (const value of str1) {
     strCounter1[value] = (strCounter1[value] || 0) + 1;
   }
@@ -54,7 +54,7 @@ function isAnagram(str1, str2) {
     strCounter2[value] = (strCounter2[value] || 0) + 1;
   }
   console.log(strCounter1, strCounter2);
-  //for key of counter로 counter1과 counter2의 문자 빈도가 일치하는지 확인한다.
+  // for key of counter로 counter1과 counter2의 문자 빈도가 일치하는지 확인한다.
   for (const key in strCounter1) {
     if (strCounter1[key] !== strCounter2[key]) {
       return false;

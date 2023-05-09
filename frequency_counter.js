@@ -51,11 +51,11 @@ const sampleArr2 = [1, 9, 4];
 // console.log(sampleArr1);
 // console.log(sampleArr2);
 
-/*
-맘에 안 드는 부분
-1. same 함수가 호출되기 전까지 변경되지 않고 유지되어야 함.
-2. same 함수 만이 sample 값들을 변경할 수 있으면 좋을 것 같다.
-*/
+// /*
+// 맘에 안 드는 부분
+// 1. same 함수가 호출되기 전까지 변경되지 않고 유지되어야 함.
+// 2. same 함수 만이 sample 값들을 변경할 수 있으면 좋을 것 같다.
+// */
 
 // //또 다른 풀이
 // //arr2에서 arr1[i]**2과 일치하는 숫자를 하나씩 제거하는 방식
@@ -82,32 +82,35 @@ const sampleArr2 = [1, 9, 4];
 // console.log(same2(sampleArr1, sampleArr2));
 // //O(N^2)의 방식임.
 
-//또 다른 풀이2
-//두 배열을 순회해서 두 배열의 값의 빈도를 두 객체에 넣고 사용하는 법.
+// 또 다른 풀이2
+// 두 배열을 순회해서 두 배열의 값의 빈도를 두 객체에 넣고 사용하는 법.
 function same(arr1, arr2) {
   if (arr1.length !== arr2.length) {
     return false;
   }
-  let frequencyCounter1 = {};
-  let frequencyCounter2 = {};
-  for (let val of arr1) {
+  const frequencyCounter1 = {};
+  const frequencyCounter2 = {};
+  for (const val of arr1) {
     frequencyCounter1[val] = (frequencyCounter1[val] || 0) + 1;
   }
-  for (let val of arr2) {
+  for (const val of arr2) {
     frequencyCounter2[val] = (frequencyCounter2[val] || 0) + 1;
   }
-  for (let key in frequencyCounter1) {
-    if (!(key ** 2 in frequencyCounter2)) {
-      return false;
-    }
-    if (frequencyCounter2[key ** 2] !== frequencyCounter1[key]) {
-      return false;
+  for (const key in frequencyCounter1) {
+    if (frequencyCounter1.hasOwnProperty.call(frequencyCounter1, key)) {
+      if (frequencyCounter1[key ** 2] !== frequencyCounter2[key]) {
+        return false;
+      }
+      if (frequencyCounter2[key ** 2] !== frequencyCounter1[key]) {
+        return false;
+      }
     }
   }
   console.log(frequencyCounter1);
   console.log(frequencyCounter2);
   return true;
 }
-same(sampleArr1, sampleArr2);
-//이 방식은 O(N)이 됨
-//빈도 수를 저장할 때엔 객체를 사용하는 것이 좋다.
+console.log(same(sampleArr1, sampleArr2));
+
+// 이 방식은 O(N)이 됨
+// 빈도 수를 저장할 때엔 객체를 사용하는 것이 좋다.
