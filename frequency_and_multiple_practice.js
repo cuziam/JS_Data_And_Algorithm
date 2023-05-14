@@ -28,6 +28,7 @@ go
 */
 function sameThereDuplicates(...args) {
   // 카운터 생성
+
   const argsCounter = {};
   // 카운터에 값 넣음
   for (const value of args) {
@@ -44,3 +45,27 @@ function sameThereDuplicates(...args) {
 }
 
 console.log(sameThereDuplicates(2, 4, 9, 9, 9));
+
+
+//다중 포인터
+function areThereDuplicates1(...args) {
+  // Two pointers
+  args.sort((a,b) => a > b);
+  let start = 0;
+  let next = 1;
+  while(next < args.length){
+    if(args[start] === args[next]){
+        return true
+    }
+    start++
+    next++
+  }
+  return false
+}
+
+//한 줄 코드
+//Set(<array>)는 array를 Set으로 변경해준다.
+//거꾸로 [...<set>]은 Set을 array형태로 변경해준다.
+function areThereDuplicates() {
+  return new Set(arguments).size !== arguments.length;
+}
