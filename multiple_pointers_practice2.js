@@ -49,3 +49,11 @@ function isSubsequence(str1, str2) {
   }
 }
 console.log(isSubsequence('abcd', 'abc'));
+
+// O(1)공간이 아닌 재귀방식
+function isSubsequence2(str1, str2) {
+  if (str1.length === 0) return true;
+  if (str2.length === 0) return false;
+  if (str2[0] === str1[0]) return isSubsequence2(str1.slice(1), str2.slice(1));
+  return isSubsequence2(str1, str2.slice(1));
+}
