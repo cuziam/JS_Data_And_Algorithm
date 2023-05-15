@@ -26,7 +26,7 @@ arguments 객체에 직접 접근하기.
 go
 글
 */
-function sameThereDuplicates(...args) {
+function areThereDuplicates(...args) {
   // 카운터 생성
 
   const argsCounter = {};
@@ -44,28 +44,27 @@ function sameThereDuplicates(...args) {
   return false;
 }
 
-console.log(sameThereDuplicates(2, 4, 9, 9, 9));
+console.log(areThereDuplicates1(2, 4, 9, 9, 9));
 
-
-//다중 포인터
+// 다중 포인터
 function areThereDuplicates1(...args) {
   // Two pointers
-  args.sort((a,b) => a > b);
+  args.sort((a, b) => a - b);
   let start = 0;
   let next = 1;
-  while(next < args.length){
-    if(args[start] === args[next]){
-        return true
+  while (next < args.length) {
+    if (args[start] === args[next]) {
+      return true;
     }
-    start++
-    next++
+    start++;
+    next++;
   }
-  return false
+  return false;
 }
 
-//한 줄 코드
-//Set(<array>)는 array를 Set으로 변경해준다.
-//거꾸로 [...<set>]은 Set을 array형태로 변경해준다.
-function areThereDuplicates() {
+// 한 줄 코드
+// Set(<array>)는 array를 Set으로 변경해준다.
+// 거꾸로 [...<set>]은 Set을 array형태로 변경해준다.
+function areThereDuplicates2() {
   return new Set(arguments).size !== arguments.length;
 }
