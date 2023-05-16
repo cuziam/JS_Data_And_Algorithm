@@ -39,12 +39,14 @@ winRight가 arr1의 길이가 될 때까지 수행한다.
         right++
 */
 function findLongestSubstring(str1) {
+  // seen은 문자들의 인덱스를 저장한다.
   let longest = 0;
   const seen = {};
   let start = 0;
 
   for (let i = 0; i < str1.length; i++) {
     const char = str1[i];
+    // 이미 seen 객체에 문자의 인덱스가 저장되어 있으면 해당 인덱스로 start값을 옮긴다.
     if (seen[char]) {
       start = Math.max(start, seen[char]);
     }
