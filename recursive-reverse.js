@@ -13,10 +13,7 @@ reverse('rithmschool') // 'loohcsmhtir'
 <풀이>
 문자열리터럴은 값을 바꿀 수 없다. 따라서 복사해서 이용해야 한다.
 인자이름은 str로
-새로운 빈 문자열 newStr 생성
-str의 끝을 str.slice(str.length-1)로 얻고. newStr.concat으로 붙인다.
-return reverse(str.slice(1))
-basecase는 str.length===0이 될 때이다.
+배열을 끝부분만 남기고 끝에서 부터 하나씩 더하는 방식. 재귀함수의 입력값은 다음 실행되는 재귀함수의 출력값이다.
 */
 
 function reverse(str) {
