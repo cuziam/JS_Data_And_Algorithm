@@ -16,9 +16,6 @@
 2. and calculate the sum of even values.
 a. If the input is empty, return 0.
 b. If all the values is not even, return 0.
-<풀이>
-해야하는 일: 중첩된 객체에서 프로퍼티 값들을 전부 탐색해서, 짝수인지 확인해야 한다.
-탐색
 
 var obj1 = {
   outer: 2,
@@ -85,3 +82,11 @@ function nestedEvenSum(obj) {
   return sum;
 }
 console.log(nestedEvenSum(obj2));
+/**
+ * 보완해야 했던 점.
+ * 1. obj가 일반 객체인데, for of문을 쓰려고 했다.
+ * 2. isEmpty()라는 메소드가 없는데 사용하려고 했다.
+ * 3. 변수명을 한 번에 바꾸지 않았다.
+ * 4. base case는 잘 설정했는데, 리턴 값을 잘못 설정했음
+ * => 객체 원소에 대해서 return nestedEvenSum(obj[key])를 했었다.
+ */
