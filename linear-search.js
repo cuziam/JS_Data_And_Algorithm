@@ -8,6 +8,7 @@
  find(callback[, thisArg])
 array.prototype.findIndex(callback(element[, index[, array]])[, thisArg])
 
+testtest
 <문제>
 Write a function called linearSearch
 which accepts an array and a value,
