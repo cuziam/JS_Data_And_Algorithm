@@ -67,7 +67,7 @@ if(arr.length===0){
 }
 left=0
 right=arr.length-1
-while(left<right){
+while(left<right){//이 부분때문에 처음에 버그가 발생했었음
     mid=Math.floor((left+right)/2)
     if(arr[mid]===target)
         return mid;
