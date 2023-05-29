@@ -70,7 +70,40 @@ class SinglyLinkedList {
     // pop된 노드 반환.
     return current;
   }
+
+  shift() {
+    if (this.length === 0) {
+      return undefined;
+    }
+    const currentHead = this.head;
+    this.head = this.head.next;
+    this.length--;
+    if (this.length === 0) {
+      this.head = null;
+      this.tail = null;
+    }
+    return currentHead;
+  }
+
+  unshift(val) {
+    const newNode = new Node(val);
+    // 여기서 newNode.next=this.head하면 안 된다.
+    // 리스트가 비어 있는 경우에 newNode를 그대로 추가하면 문제가 되기 때문이다.
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = this.head;
+    } else {
+      newNode.next = this.head;
+      this.head = newNode;
+    }
+    this.length++;
+    return this;
+  }
 }
 const list = new SinglyLinkedList();
 list.push('a');
 list.push('b');
+list.push('c');
+list.shift();
+list.unshift('abc');
+console.log(list);
