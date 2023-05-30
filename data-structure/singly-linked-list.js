@@ -13,6 +13,12 @@ length: 노드의 갯수.
 반면 배열은 인덱스를 통해 바로 접근가능하다. 
 3.단방향 연결 리스트는 인덱스가 없고, 배열은 있다.
 
+insertion(push,unshift)=>O(N)
+removal=>O(1) or O(N)
+searching=> O(N)
+Access=> O(N)
+삽입과 제거가 많다면 배열의 훌륭한 대안이 될 수 있다.
+단방향 연결 리스트를 기반으로 스택이나 큐를 만들 수 있다.
 */
 class Node {
   constructor(val) {
@@ -25,6 +31,13 @@ class SinglyLinkedList {
     this.head = null;
     this.tail = null;
     this.length = 0;
+  }
+
+  isEmpty() {
+    if (this.length === 0) {
+      return true;
+    }
+    return false;
   }
 
   push(val) {
@@ -99,11 +112,90 @@ class SinglyLinkedList {
     this.length++;
     return this;
   }
+
+  // 주어진 위치에 있는 노드를 반환하는 메소드
+  // 0이면 head반환, length-1이면 tail, 그 사이엔 current node반환
+  // 배열이 비어있다면?
+  // idx가 길이와 같거나 크다면?
+  get(targetIdx) {
+    if (targetIdx < 0) return null;
+    if (this.length === 0 || this.length <= targetIdx) return null;
+    let current = this.head;
+    let currentIdx = 0;
+    while (currentIdx !== targetIdx) {
+      current = current.next;
+      currentIdx++;
+    }
+    return current;
+  }
+
+  // input1: targetIdx input2: targetVal
+  // change the value in targetIdx to targetVal
+  set(targetIdx, targetVal) {
+    const nodeToSet = this.get(targetIdx);
+    if (nodeToSet) {
+      nodeToSet.val = targetVal;
+      return true;
+    }
+    return false;
+  }
+
+  insert(targetIdx, targetVal) {
+    if (this.isEmpty()) return false;
+    if (targetIdx < 0 || targetIdx > this.length) return false;
+    if (targetIdx === 0) return !!this.unshift(targetVal);
+    if (targetIdx === this.length) return !!this.push(targetVal);
+
+    const newNode = new Node(targetVal);
+    const prevNode = this.get(targetIdx - 1);
+    const nextNode = this.get(targetIdx);
+
+    prevNode.next = newNode;
+    newNode.next = nextNode;
+    this.length++;
+
+    return true;
+  }
+
+  remove(targetIdx) {
+    if (this.isEmpty()) return false;
+    if (targetIdx < 0 || targetIdx >= this.length) return false;
+    if (targetIdx === this.length - 1) return !!this.pop();
+    if (targetIdx === 0) return !!this.shift();
+
+    const prevNode = this.get(targetIdx - 1);
+    const nodeToRemove = prevNode.next;
+    prevNode.next = nodeToRemove.next;
+
+    return nodeToRemove;
+  }
+
+  reverse() {
+    if (this.isEmpty() || this.length === 1) return true;
+    // swap head and tail
+    let currentNode = this.head;
+    this.head = this.tail;
+    this.tail = currentNode;
+
+    // create next,prev,cur
+    let nextNode;
+    let prevNode = null; // 이 부분이 상당히 중요함.
+
+    for (let i = 0; i < this.length; i++) {
+      // 다음 노드 값 설정
+      nextNode = currentNode.next;
+      // 현재 노드의 next를 이전 노드로 갱신
+      currentNode.next = prevNode;
+      // 이전 노드와 현재 노드 재설정(오른쪽으로 이동)
+      prevNode = currentNode;
+      currentNode = nextNode;
+    }
+    return this;
+  }
 }
 const list = new SinglyLinkedList();
 list.push('a');
 list.push('b');
 list.push('c');
-list.shift();
-list.unshift('abc');
-console.log(list);
+list.set(3, 'd');
+console.log(list.remove(1));
