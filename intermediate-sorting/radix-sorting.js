@@ -65,3 +65,54 @@ function radixSort(arr) {
   return result;
 }
 console.log(radixSort([23, 567, 89, 1245673432, 90]));
+
+/**
+ * 자리 수 별로 숫자 받기
+ * 배열 내의 최대 자리 수 구하기
+ * 
+ * Count maxDigit
+ * for (i=0; i<maxDigit; i++)
+ *  Generate buckets:<array>: length:10, elements:<array>
+ * for(let j=0;j<arr.length;j++)
+ *  Save digit from each element
+ *  Save each element to buckets
+ * endloop
+ * result=[].concat(...bucket)
+ * 
+ * 
+ */
+function numberOfDigits(num){
+  return Math.floor(Math.log10(Math.abs(num)))+1;
+}
+console.log(numberOfDigits(4520));
+
+function maxDigits(arr){
+  let max=0;
+  for(let i=0;i<arr.length;i++){
+    max=Math.max(numberOfDigits(arr[i]),max);
+  }
+  return max;
+}
+console.log(maxDigits([49240,249201,2340]));
+
+function getDigit2(num,i){
+  return Math.floor(num/(10**i)%10);
+}
+console.log(getDigit2(4231,3));
+
+
+function radixSort2(arr){
+  let result=[];
+  const maxDigit=maxDigits(arr);
+  for(let i=0;i<maxDigit;i++){
+    const buckets=Array.from({length:10},()=>[]);
+    for(let j=0;j<arr.length;j++){
+      let digit=getDigit2(arr[j],i);
+      buckets[digit].push(arr[j]);
+    }
+    result=[].concat(...buckets);
+  }
+  return result;
+}
+
+console.log(radixSort2([234551,1234,1251,7844,45671,1234,371633,99]))
