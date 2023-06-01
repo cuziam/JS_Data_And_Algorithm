@@ -3,7 +3,7 @@
  * 단연결 리스트에서 앞 노드를 가리키는 포인터가 추가된 것 뿐이다.
  * head와 tail은 동일하게 존재한다.
 insertion(push,unshift)=>O(1)
-removal=>O(1)
+removal=>O(1)~O(N)
 searching=> O(N), 사실 O(N/2)이긴 한데 점근적 표기법에 따르면 아무튼 O(N)
 Access=> O(N)
 

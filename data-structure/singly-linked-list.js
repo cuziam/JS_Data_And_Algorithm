@@ -13,7 +13,7 @@ length: 노드의 갯수.
 반면 배열은 인덱스를 통해 바로 접근가능하다. 
 3.단방향 연결 리스트는 인덱스가 없고, 배열은 있다.
 
-insertion(push,unshift)=>O(N)
+insertion(push,unshift)=>O(1)
 removal=>O(1) or O(N)
 searching=> O(N)
 Access=> O(N)
