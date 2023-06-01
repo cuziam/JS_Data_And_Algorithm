@@ -19,6 +19,7 @@ function maxPair(str1, str2) {
    *        endif
    *    endloop
    *    return result;
+   *
    * 배열 카운터 보다 객체 카운터가 좋은 경우가 많다.
    * 배열 카운터는 쓸데 없는 공간을 만들 가능성이 높다.
    */

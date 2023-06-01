@@ -64,7 +64,7 @@ class SinglyLinkedList {
     let current = this.head;
     let newTail = current;
     while (current.next) {
-      // current는 마지막 노드를, newTail은 마지막에서 두 번재 노드를 가리키도록 한다.
+      // current는 현재 노드를 가리킨다.
       newTail = current;
       current = current.next;
     }
