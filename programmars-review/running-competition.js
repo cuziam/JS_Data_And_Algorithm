@@ -16,6 +16,9 @@ function swap(arr, i, j) {
 function solution(players, callings) {
   for (let i = 0; i < callings.length; i++) {
     const calledPlayer = callings[i];
+    //swap은 속도상 문제가 크게 되지 않을 것 같은데, indexOf는 속도에 영향을 많이 줄 것이다.
+    //Players와 callings의 길이에 비례해서, indexOf의 속도가 모두 느려지기 때문이다.
+    //
     const playerIdx = players.indexOf(calledPlayer);
     swap(players, playerIdx, playerIdx - 1);
   }
