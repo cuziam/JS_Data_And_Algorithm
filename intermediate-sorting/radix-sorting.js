@@ -12,6 +12,10 @@
 시간복잡도: 어떤 경우건 O(nk) n=자료의 길이 k=자료의 평균 자리 수. 숫자가 완전히 랜덤한 경우엔 O(NlogN)이랜다.
 공간복잡도: O(n+k) 배열 버켓을 만들어야 해서 k개는 반드시 필요.
 */
+const obj1=Object();
+const obj2={};
+//이거 두 개는 뭐가 다르지
+//위에 것의 경우 인자를 사용하게 될 경우 어떤 결과가 발생하지?`
 
 // 헬퍼함수. returns the digit in num at the given place value
 // 특정 자리 수에 있는 숫자를 리턴하는 함수
