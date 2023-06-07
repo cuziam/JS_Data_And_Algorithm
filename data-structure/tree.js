@@ -60,7 +60,7 @@ class BinarySearchTree {
         currentNode = currentNode.left;
       } else {
         if (currentNode.right === null) {
-          currentNode = newNode;
+          currentNode.right = newNode;
           return this;
         }
         currentNode = currentNode.right;
@@ -105,6 +105,74 @@ class BinarySearchTree {
     // 찾는 값이 없다면 false반환.
     return false;
   }
+
+  // BFS(Breadth First Search) 방식으로 순회한 이력을 반환하는 함수.
+  // BFS는 큐를 사용하는 메모리를 고려해야 한다.
+  BFS() {
+    // data 배열은 순회 이력을 담는다.
+    const data = [];
+    // queue 자료형을 직접 구현하는 것이 훨씬 빠르지만 일단 임시로 shift()와 push()로 구현한다.
+    // queue 배열은 다음 순회해야 할 노드에 대한 정보를 담고 있다.
+    const queue = [];
+    let node = this.root;
+
+    queue.push(this.root);
+    // while의 표현식 자리에 빈 배열을 넣으면 true로 형변환됨.
+    // 따라서 queue.length를 사용한다.
+    while (queue.length) {
+      node = queue.shift();
+      data.push(node.value);
+      if (node.left) queue.push(node.left);
+      if (node.right) queue.push(node.right);
+    }
+    return data;
+  }
+
+  // DFS(Depth first Search): preOrder
+  // DFS는 호출스택에 대한 메모리를 고려해야 한다.
+  // 루트->왼쪽->오른쪽
+  // 트리의 구조를 한 번에 파악하기 편하다. 따라서 트리를 복사하거나 평탄화해서 저장하는 경우 유용하다.
+  preOrder() {
+    const data = [];
+    function traverse(node) {
+      data.push(node.value);
+      if (node.left) traverse(node.left);
+      if (node.right) traverse(node.right);
+    }
+    traverse(this.root);
+    return data;
+  }
+
+  // DFS: postOrder
+  // 왼쪽->오른쪽->루트
+  // 트리의 하위 구조를 먼저 처리한 후 루트를 처리할 때나 메모리 해제 및 자원 정리에 유용하다.
+  postOrder() {
+    const data = [];
+
+    function traverse(node) {
+      if (node.left) traverse(node.left);
+      if (node.right) traverse(node.right);
+      data.push(node.value);
+    }
+    traverse(this.root);
+    return data;
+  }
+
+  // DFS: inOrder
+  // 왼쪽->루트->오른쪽
+  // 노드를 크기 순서대로 방문한다는 것이 특징이다.
+  // 따라서 노드의 값을 정렬된 순서로 처리할 때 유용하다.
+  inOrder() {
+    const data = [];
+
+    function traverse(node) {
+      if (node.left) traverse(node.left);
+      data.push(node.value);
+      if (node.right) traverse(node.right);
+    }
+    traverse(this.root);
+    return data;
+  }
 }
 
 const tree = new BinarySearchTree();
@@ -112,6 +180,10 @@ tree.root = new Node(10);
 tree.root.right = new Node(55);
 tree.root.left = new Node(7);
 tree.root.left.right = new Node(9);
-tree.insert(55);
 tree.insert(65);
-console.log(tree.find(10));
+tree.insert(42);
+tree.insert(6);
+console.log(tree.BFS());
+console.log(tree.preOrder());
+console.log(tree.postOrder());
+console.log(tree.inOrder());
