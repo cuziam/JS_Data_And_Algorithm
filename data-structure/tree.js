@@ -146,6 +146,7 @@ class BinarySearchTree {
   // DFS: postOrder
   // 왼쪽->오른쪽->루트
   // 트리의 하위 구조를 먼저 처리한 후 루트를 처리할 때나 메모리 해제 및 자원 정리에 유용하다.
+  // 내 생각: 디렉토리를 불러올 때 유용하다.
   postOrder() {
     const data = [];
 
