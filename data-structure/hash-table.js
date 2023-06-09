@@ -63,11 +63,10 @@ function hash(key, arrayLen) {
 => 배열의 길이보다 더 많은 데이터를 저장할 수 있다는 장점이 있다.
 
 2. linear probing: 특정 인덱스에 무언가가 이미 있다면, 배열을 순회해가며 빈 공간을 찾아서 사용한다.
-
 */
 function hash2(key, arrayLen) {
   let total = 0;
-  // 소수를 사용하면 데이터가 좀 더 균일하게 퍼진다.=> 왜 인지 알고 싶으면 quora 참고
+  // 소수를 사용하는 이유: 데이터가 더 균등하게 퍼진다.=> 통계적으로 나타난 자료있음
   // https://www.quora.com/Does-making-array-size-a-prime-number-help-in-hash-table-implementation-Why?q=does%20making%20array%20size
   const WEIRD_PRIME = 31;
   for (let i = 0; i < Math.min(key.length, 100); i++) {
@@ -77,3 +76,24 @@ function hash2(key, arrayLen) {
   }
   return total;
 }
+
+/**
+ * 이제 set과 get 메소드를 직접 구현해볼 것이다.
+ * Set의 동작과정
+ * 1. Accepts a key and a value
+ * 2. Hashes the key
+ * 3. Stores the key-value pair in the hash table array via separate chaining
+ * 
+ * Get의 동작과정
+ * 1. Accepts a key
+ * 2. Hashes the key
+ * 3. Retrieves the key-value pair in the hash table.
+ * 4. If the key isn't found, returns undefined.
+ * 
+ * <Set의 동작 특징>
+ * Set은 내부적으로 해쉬 테이블을 사용하여 구현된다.
+ * Set은 값 자체가 키 역할을 하고, 값의 중복을 허용하지 않는다. 즉 충돌처리를 해준다.
+ * 이 때 사용하는 기법은 seperate chaining기법이다.
+ *
+ * 
+ */
