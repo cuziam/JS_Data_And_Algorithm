@@ -22,6 +22,11 @@
  *  1. 상수 시간 만큼 동작이 빨라야 한다.
  *  2. 결과값이 특정 값 주위에 모여있으면 안된다.=> distribute uniformly.
  *  3. Deterministic(same input yields same output)
+ *
+ * <시공간 복잡도>
+ * Insert: O(1)
+ * Deletion: O(1)
+ * Access:O(1);
  */
 
 // 바보같은 예시긴 하지만 나쁜 해쉬의 예시
@@ -78,22 +83,141 @@ function hash2(key, arrayLen) {
 }
 
 /**
- * 이제 set과 get 메소드를 직접 구현해볼 것이다.
+ * 이제 정말로 hash table 및 set, get, keys, values 메소드를 직접 구현해볼 것이다.
  * Set의 동작과정
  * 1. Accepts a key and a value
+ *
  * 2. Hashes the key
  * 3. Stores the key-value pair in the hash table array via separate chaining
- * 
+ *
  * Get의 동작과정
  * 1. Accepts a key
  * 2. Hashes the key
  * 3. Retrieves the key-value pair in the hash table.
  * 4. If the key isn't found, returns undefined.
- * 
+ *
  * <Set의 동작 특징>
  * Set은 내부적으로 해쉬 테이블을 사용하여 구현된다.
  * Set은 값 자체가 키 역할을 하고, 값의 중복을 허용하지 않는다. 즉 충돌처리를 해준다.
  * 이 때 사용하는 기법은 seperate chaining기법이다.
- *
- * 
  */
+
+class Hashtable {
+  constructor(size = 17) {
+    this.keyMap = new Array(size);
+  }
+
+  _hash(key) {
+    let total = 0;
+    const WEIRD_PRIME = 31;
+    for (let i = 0; i < Math.min(key.length, 100); i++) {
+      const char = key[i];
+      const value = char.charCodeAt(0) - 96;
+      total = (total * WEIRD_PRIME + value) % this.keyMap.length;
+    }
+    return total;
+  }
+
+  // 해쉬테이블에 키값쌍을 저장하는 함수
+  set(key, value) {
+    // 1. hash 함수에 key값을 넣어 고정길이의 숫자(여기선 해쉬테이블의 인덱스 값)로 매칭 시킨다.
+    const index = this._hash(key);
+    // 2. this.keyMap[index]에 key,value값을 저장한다.
+    // =>separate chaining을 구현하기 위해선 해쉬테이블을 중첩 배열구조로 만들어줘야 한다.
+    // 만약에 해당 인덱스가 비어있다면 빈 '배열'을 일단 할당해줘야 한다.
+    if (!this.keyMap[index]) {
+      this.keyMap[index] = [];
+    }
+    // 비어있는 경우가 아니라면 키값 쌍을 배열에 push해준다.
+    this.keyMap[index].push([key, value]);
+  }
+
+  // 키를 이용하여, 키값 쌍을 반환하는 함수.
+  get(key) {
+    // 1. hash함수에 key값을 넣어서 index값을 얻는다.
+    const index = this._hash(key);
+    // 2.this.keyMap[index]에서 key,value값을 검색한다.
+    // 만약에 해당 인덱스가 비어있다면 return undefined
+    if (!this.keyMap[index]) return undefined;
+    // 비어있지 않다면 탐색한다. 탐색 알고리즘은 간단하게 선형검색을 선택했다.
+    for (let i = 0; i < this.keyMap[index].length; i++) {
+      if (this.keyMap[index][i][0] === key) {
+        return this.keyMap[index][i];
+      }
+    }
+  }
+
+  // 모든 키들을 배열에 담아서 반환하는 함수
+  keys() {
+    const keysArr = [];
+    // 해쉬 테이블이 비어있다면 undefined 반환
+    if (!this.keyMap) {
+      console.log(`the table is empty`);
+      return undefined;
+    }
+
+    for (let i = 0; i < this.keyMap.length; i++) {
+      // 원소가 비어있지 않은 경우
+      if (this.keyMap[i]) {
+        for (let j = 0; j < this.keyMap[i].length; j++) {
+          keysArr.push(this.keyMap[i][j][0]);
+        }
+      }
+      // 원소가 비어있는 경우에는 다음 루프 실행.
+    }
+    return keysArr;
+  }
+
+  // 모든 값들을 배열에 담아서 반환하는 함수
+  values() {
+    const valuesArr = [];
+    // 해쉬 테이블이 비어있다면 undefined 반환
+    if (!this.keyMap) {
+      console.log(`the table is empty`);
+      return undefined;
+    }
+
+    for (let i = 0; i < this.keyMap.length; i++) {
+      // 원소가 비어있지 않은 경우
+      if (this.keyMap[i]) {
+        for (let j = 0; j < this.keyMap[i].length; j++) {
+          valuesArr.push(this.keyMap[i][j][1]);
+        }
+      }
+      // 원소가 비어있는 경우에는 다음 루프 실행.
+    }
+    return valuesArr;
+  }
+
+  // 키값쌍 반환하는 함수
+  entries() {
+    const valuesArr = [];
+    // 해쉬 테이블이 비어있다면 undefined 반환
+    if (!this.keyMap) {
+      console.log(`the table is empty`);
+      return undefined;
+    }
+
+    for (let i = 0; i < this.keyMap.length; i++) {
+      // 원소가 비어있지 않은 경우
+      if (this.keyMap[i]) {
+        for (let j = 0; j < this.keyMap[i].length; j++) {
+          valuesArr.push(this.keyMap[i][j]);
+        }
+      }
+      // 원소가 비어있는 경우에는 다음 루프 실행.
+    }
+    return valuesArr;
+  }
+}
+
+const ht = new Hashtable();
+ht.set('maroon', '#800000');
+ht.set('yellow', '#FFFF00');
+ht.set('olive', '#808000');
+ht.set('salmon', '#FA8072');
+ht.set('lightcoral', '#F08080');
+console.log(ht.get('olive'));
+console.log(ht.keys());
+console.log(ht.values());
+console.log(ht.entries());
