@@ -4,7 +4,7 @@
  * wikipidea: A graph data structure consists of a finite(and possibly mutable) set of vertices or nodes or points
  * together with a set of unordered pairs of these vertices for
  * an undirected graph(무방향 그래프) or a set of ordered pairs for a directed graph.(유방향 그래프)
- * 간단히 요약하면, nodes + connection의 구조를 가진 것을 모두 그래프라고 말한다.
+ * 간단히 요약하면, nodes + connection의 구조를 가진 것을 모두 그래프라고 말한다. 즉 트리도 넓은 의미에서 보면 그래프의 일종이다.
  * 트리같은 경우 깊이가 있고, 위 아래의 노드(자신의 부모노드와 자식노드)만 연결할 수 있다는 제약이 있었다.
  *
  * <사용되는 곳>
@@ -112,7 +112,7 @@ class Graph {
 /**
  * 내가 개선해본다면...
  * 1. 유효성 검사를 위한 정적 메소드 추가. isVerticesExist(vertex1,vertex2){} 함수
- * 2. 배열로 리스트를 만들지 않고, Set 객체에 연결정보를 넣어본다.
+ * 2. 연결정보를 배열에 저장하지 않고, Set 객체에 저장하는 방식을 사용한다.
  */
 class Graph2 {
   constructor() {
@@ -163,6 +163,13 @@ class Graph2 {
     // 그 후에 연결상태를 관리하는 배열을 삭제한다.
     delete this.adjecencyList[vertex];
   }
+
+  /**
+   * 이제 순회와 관련된 메소드를 구현해보자
+   * Visiting,Updating,Checking... 등등은 일단 노드들을 순회하는 과정이 필요하다.
+   * 그래프 순회 메소드가 사용되는 경우
+   * => peer to peer(P2P) network, web crawlers, finding closest matches/recommendations, shortest path problem
+   */
 }
 const g = new Graph2();
 g.addVertex('Dallas');
