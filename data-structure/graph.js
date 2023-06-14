@@ -165,21 +165,149 @@ class Graph2 {
   }
 
   /**
-   * 이제 순회와 관련된 메소드를 구현해보자
-   * Visiting,Updating,Checking... 등등은 일단 노드들을 순회하는 과정이 필요하다.
-   * 그래프 순회 메소드가 사용되는 경우
-   * => peer to peer(P2P) network, web crawlers, finding closest matches/recommendations, shortest path problem
+   * 이제 순회 메소드들을 구현해볼 것이다.
+   * <순회 메소드들의 쓰임>
+   * =>peer to peer(P2P) network, webcrawlers, finding closest matches/recommendations, short path problem
+   *
+   * <순회 기법>
+   * 순회는 트리에서 처럼 DFS,BFS가 존재한다.
+   * DFS: 자식노드가 존재한다면 자식노드 먼저 순회하는 방식. 즉 길이 막힐 때까지 가보는 거다.
+   * BFS: 형제노드를 먼저 순회하는 방식.
+   *
+   * <순회구현 시 중요한 점!!!>
+   * 트리와 다르게 모든 노드들이 서로 이어질 수 있다.
+   * 따라서 한 번 방문한 노드를 재방문하지 않도록 자신의 경로를 기억하고 있어야 한다. 어떻게?
+   * => 인접리스트에서 방문한 노드에 대한 edge를 건너뛰고 다른 edge를 선택하면 된다.
+   *
+   * <구현 기법 두 가지>
+   * 1. 재귀함수를 구현하기
+   * 2. 반복문을 사용한 함수구현
+   *
+   * <DFS 슈도코드>
+   * Recursive 방식
+   *  if vertex is empty
+   *    return(base case)
+   *  add vertex to results list
+   *  mark vertex as visited
+   *  for each neighbor in vertex's neighbors:
+   *    if neighbor is not visited:
+   *      recursively call DFS on neighbor
+   *
+   * Iterative 방식
+   * let S be a stack
+   * S.push(start)
+   * while S is not empty
+   *  vertex=S.pop()
+   *  if vertex is not labeled as discovered
+   *    visit vertex(add to result list)
+   *    label vertex as discovered
+   *    for each of vertex's neighbors, N do
+   *      S.push(N)
    */
+
+  depthFirstRecursive(start) {
+    const result = [];
+    const visited = {};
+    const { adjecencyList } = this;
+    function dfs(vertex) {
+      // basecase
+      if (!vertex) return null;
+      // record vertex in result
+      result.push(vertex);
+      // mark vertex as visited
+      visited[vertex] = true;
+      adjecencyList[vertex].forEach(neighbor => {
+        if (!visited[neighbor]) {
+          return dfs(neighbor);
+        }
+      });
+    }
+    dfs(start);
+    console.log(result);
+    return result;
+  }
+
+  depthFirstIterative(start) {
+    const result = [];
+    const stack = [start];
+    const visited = {};
+    let currentVertex;
+
+    visited[start] = true;
+    while (stack.length > 0) {
+      // pop을 하기 때문에 recursive 방식과 반대 방향으로 간선리스트를 순회한다.
+      currentVertex = stack.pop();
+      result.push(currentVertex);
+
+      this.adjecencyList[currentVertex].forEach(neighbor => {
+        if (!visited[neighbor]) {
+          visited[neighbor] = true;
+          stack.push(neighbor);
+        }
+      });
+    }
+    console.log(result);
+    return result;
+  }
+
+  /**
+   * <BFS 슈도코드>
+   * input name: start
+   * gererate result<Array>, queue<Array>, visited<Object>
+   * Enqueue start into the queue
+   * label start in visited
+   * Loop as long as there is anything in queue
+   *  Dequeue the first element from the queue.
+   *  push it into the result
+   *  Loop over each vertex in adjacency list for the vertex you are visiting.
+   *  If the vertex is not visited vertex. mark it as visited. and enque.
+   */
+  breadthFirstSearch(start) {
+    const result = [];
+    const queue = [start];
+    const visited = {};
+    visited[start] = true;
+    while (queue.length > 0) {
+      const currentVertex = queue.shift();
+      result.push(currentVertex);
+      // 거꾸로 가고 싶으면 어떻게 할까? Set객체의 경우면 리스트의 재조립 과정이 필요.
+      // 배열로 만들어진 리스트라면 reverse()를 사용해서 쓰면 됨
+      this.adjecencyList[currentVertex].forEach(edge => {
+        if (!visited[edge]) {
+          visited[edge] = true;
+          queue.push(edge);
+        }
+      });
+    }
+    console.log(result);
+    return result;
+  }
 }
+
 const g = new Graph2();
-g.addVertex('Dallas');
-g.addVertex('Tokyo');
-g.addVertex('Aspen');
-g.addVertex('Los Angeles');
-g.addVertex('Hong Kong');
-g.addEdge('Dallas', 'Tokyo');
-g.addEdge('Dallas', 'Aspen');
-g.addEdge('Hong Kong', 'Tokyo');
-g.addEdge('Hong Kong', 'Dallas');
-g.addEdge('Los Angeles', 'Hong Kong');
-g.addEdge('Los Angeles', 'Aspen');
+g.addVertex('A');
+g.addVertex('B');
+g.addVertex('C');
+g.addVertex('D');
+g.addVertex('E');
+g.addVertex('F');
+
+g.addEdge('A', 'B');
+g.addEdge('A', 'C');
+g.addEdge('B', 'D');
+g.addEdge('C', 'E');
+g.addEdge('D', 'E');
+g.addEdge('D', 'F');
+g.addEdge('E', 'F');
+g.depthFirstRecursive('A');
+g.depthFirstIterative('A');
+g.breadthFirstSearch('A');
+// recursive result: [ 'A', 'B', 'D', 'E', 'C', 'F' ]
+// iterative result: [ 'A', 'C', 'E', 'F', 'D', 'B' ]
+//          A
+//        /   \
+//       B     C
+//       |     |
+//       D --- E
+//        \   /
+//          F
