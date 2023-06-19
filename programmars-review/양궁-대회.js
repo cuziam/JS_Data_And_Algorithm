@@ -50,23 +50,60 @@ info를 뒤에서부터 순회한다. 큰 점수부터 방문하기 위함이다
 다 했으면? lionTotal<=어피치 총점?[-1]:lionTable
 
 */
-function solution(n, info) {
-  const lionTable = Array(11).fill(0);
-  let restNum = n;
-  let lionTotal = 0;
-  const apeachTotal = info.reduce((acc, cur, idx) => (cur !== 0 ? acc + 10 - idx : acc), 0);
+// 방법1
+// function solution(n, info) {
+//   const lionTable = Array(11).fill(0);
+//   let restNum = n;
+//   let lionTotal = 0;
+//   const apeachTotal = info.reduce((acc, cur, idx) => (cur !== 0 ? acc + 10 - idx : acc), 0);
 
-  console.log(info, apeachTotal);
+//   console.log(info, apeachTotal);
 
-  for (let i = 0; i < info.length; i++) {
-    const score = 10 - i;
-    if (info[i] >= lionTable[i] && info[i] < restNum) {
-      const usedNum = info[i] + 1;
-      lionTable[i] = usedNum;
-      lionTotal += score;
-      restNum -= usedNum;
+//   for (let i = 0; i < info.length; i++) {
+//     const score = 10 - i;
+//     if (info[i] >= lionTable[i] && info[i] < restNum) {
+//       const usedNum = info[i] + 1;
+//       lionTable[i] = usedNum;
+//       lionTotal += score;
+//       restNum -= usedNum;
+//     }
+//   }
+//   console.log(lionTable, lionTotal);
+// }
+solution(9, [0, 0, 1, 2, 0, 1, 1, 1, 1, 1, 1]);
+
+// 방법2
+// 모든 점수의 경우의 수를 반환하는 함수
+function generateSubsets(set) {
+  const subsets = [];
+  const n = set.length;
+
+  // 부분집합의 개수는 2^n - 1
+  const totalSubsets = 2 ** n - 1;
+
+  // 1부터 totalSubsets까지의 정수를 이진수로 변환하여 부분집합을 생성
+  for (let i = 1; i <= totalSubsets; i++) {
+    const subset = [];
+    let bitmask = i;
+
+    for (let j = 0; j < n; j++) {
+      if (bitmask & 1) {
+        subset.push(set[j]);
+      }
+      bitmask >>= 1;
     }
+    subsets.push(subset);
   }
-  console.log(lionTable, lionTotal);
+  return subsets;
+}
+
+function solution(n, info) {
+  // 주어진 집합
+  const set = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+  // 모든 부분집합 생성
+  const subsets = generateSubsets(set);
+  const apeachTotal = info.reduce((acc, cur, idx) => (cur !== 0 ? acc + 10 - idx : acc), 0);
+  const restArrows = n;
+  const result = Array(11).fill(0);
 }
 solution(9, [0, 0, 1, 2, 0, 1, 1, 1, 1, 1, 1]);
