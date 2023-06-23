@@ -27,8 +27,10 @@ function solution(babbling) {
 solution(['ayaye', 'uuu', 'yeye', 'yemawoo', 'ayaayaa']);
 
 function solution2(babbling) {
-  const regexp1 = /(aya|ye|woo|ma)\1+/;
-  const regexp2 = /^(aya|ye|woo|ma)+$/;
-
-  return babbling.reduce((ans, word) => (!regexp1.test(word) && regexp2.test(word) ? ++ans : ans), 0);
+  // aya,ye,woo,ma가 한번이라도 반복되는 패턴 정의
+  // ex) ayaaya
+  const regex1 = /(aya|ye|woo|ma)\1+/;
+  // aya,ye,woo,ma로 만들 수 있는 모든 패턴 정의
+  const regex2 = /^(aya|ye|woo|ma)+$/;
+  return babbling.reduce((acc, cur) => (!regex1.test(cur) && regex2.test(cur) ? ++acc : acc), 0);
 }
