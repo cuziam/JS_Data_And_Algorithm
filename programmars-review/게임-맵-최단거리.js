@@ -6,6 +6,7 @@ n*m이 도착점 n=width m=height
 
 필요한 것
 BFS 재귀함수와, BFS실행에 필요한 queue
+연결정보를 알 수 있는 무언가
 */
 function solution(maps) {
   const maxRow = maps.length;
