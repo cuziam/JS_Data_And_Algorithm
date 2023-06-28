@@ -19,3 +19,77 @@ function solution(food) {
   const answer = person1.join('') + '0' + person2.join('');
   return answer;
 }
+
+// 연결리스트를 만들어서 사용할 경우
+class Node {
+  constructor(value) {
+    this.prev = null;
+    this.next = null;
+    this.value = value;
+  }
+}
+class DoublyLinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
+
+  push(value) {
+    const newNode = new Node(value);
+    if (this.length === 0) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      newNode.prev = this.tail;
+      this.tail = newNode;
+    }
+    this[this.length] = newNode; // 유사배열 객체로 사용하기 위해 추가
+    this.length++;
+  }
+
+  // 사실 Enqueue 동작이긴 한데, 편의상 unshift라는 이름을 붙였다.
+  unshift(value) {
+    const newNode = new Node(value);
+    if (this.length === 0) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.head.prev = newNode;
+      newNode.next = this.head;
+      this.head = newNode;
+    }
+    this.length++;
+  }
+
+  join() {
+    let currentNode = this.head;
+    let result = '';
+    while (currentNode !== null) {
+      result += currentNode.value;
+      currentNode = currentNode.next;
+    }
+    return result;
+  }
+}
+
+function solution2(food) {
+  const order = new DoublyLinkedList();
+  order.push('0');
+  for (let i = food.length - 1; i >= 0; i--) {
+    const allotment = Math.floor(food[i] / 2);
+    for (let j = 0; j <= allotment; j++) {
+      order.push(i);
+      order.unshift(i);
+    }
+  }
+  return order.join();
+}
+const list = new DoublyLinkedList();
+list.push('a');
+list.push('b');
+list.push('c');
+console.log(list);
+console.log(list.join());
+solution([1, 3, 4, 6]);
