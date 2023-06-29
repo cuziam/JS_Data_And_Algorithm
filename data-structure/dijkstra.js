@@ -27,6 +27,25 @@ A에서 B까지 수많은 노드가 있다. 노드들을 이동할 때 가장 �
 가중 그래프를 그려봅시다.
  */
 
+class PriorityQueue {
+  constructor() {
+    this.values = [];
+  }
+
+  enqueue(val, priority) {
+    this.values.push({ val, priority });
+    this.sort();
+  }
+
+  dequeue() {
+    return this.values.shift();
+  }
+
+  sort() {
+    this.values.sort((a, b) => a.priority - b.priority);
+  }
+}
+
 class WeightedGraph {
   constructor() {
     this.adjacencyList = {};
@@ -40,12 +59,78 @@ class WeightedGraph {
     this.adjacencyList[vertex1].push({ node: vertex2, weight });
     this.adjacencyList[vertex2].push({ node: vertex1, weight });
   }
+
+  dijkstra(start, finish) {
+    const nodes = new PriorityQueue();
+    const distances = {};
+    const previous = {};
+    const path = []; // to return at end
+    let smallest;
+    // build up initial state
+    for (const vertex in this.adjacencyList) {
+      if (Object.hasOwnProperty.call(this.adjacencyList, vertex)) {
+        if (vertex === start) {
+          // 표에서 시작점에 대한 거리는 0으로 표기한다.
+          distances[vertex] = 0;
+          // 우선순위 큐는 다음에 접근할 정점을 결정한다. 일단 시작 노드만 큐에 넣는다.
+          nodes.enqueue(vertex, 0);
+        } else {
+          // 표에서 시작점을 제외한 다른 점은 전부 거리를 무한으로 설정해놓는다.
+          distances[vertex] = Infinity;
+          nodes.enqueue(vertex, Infinity);
+        }
+        // previous 객체의 프로퍼티를 전부 null로 초기화한다.
+        previous[vertex] = null;
+      }
+    }
+    // as long as there is something to visit
+    while (nodes.values.length) {
+      smallest = nodes.dequeue().val;
+      if (smallest === finish) {
+        // we are done!
+        while (previous[smallest]) {
+          path.push(smallest);
+          smallest = previous[smallest];
+        }
+        break;
+      }
+      if (smallest || distances[smallest] !== Infinity) {
+        for (const neighbor in this.adjacencyList[smallest]) {
+          // find neighboring node
+          const nextNode = this.adjacencyList[smallest][neighbor];
+          // calculate the distance to neighboring node
+          const candidate = distances[smallest] + nextNode.weight;
+          const nextNeighbor = nextNode.node;
+          if (candidate < distances[nextNeighbor]) {
+            // updating new smallest distance to neighbor
+            distances[nextNeighbor] = candidate;
+            // updating previous - how we got to neighbor
+            previous[nextNeighbor] = smallest;
+            // enqueue in priority queue with new priority
+            nodes.enqueue(nextNeighbor, candidate);
+          }
+        }
+      }
+    }
+    return path.concat(smallest).reverse();
+  }
 }
 const graph = new WeightedGraph();
-graph.addVertex('a');
-graph.addVertex('b');
-graph.addVertex('c');
-graph.addEdge('a', 'b', 9);
-graph.addEdge('a', 'c', 5);
-graph.addEdge('b', 'c', 7);
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
+graph.addVertex('F');
+
+graph.addEdge('A', 'B', 4);
+graph.addEdge('A', 'C', 2);
+graph.addEdge('B', 'E', 3);
+graph.addEdge('C', 'D', 2);
+graph.addEdge('C', 'F', 4);
+graph.addEdge('D', 'E', 3);
+graph.addEdge('D', 'F', 1);
+graph.addEdge('E', 'F', 1);
+
 console.log(graph);
+console.log(graph.dijkstra('A', 'E'));
