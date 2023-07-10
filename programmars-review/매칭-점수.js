@@ -38,83 +38,63 @@ class Node {
     const url = page.match(urlPattern)[1];
     this.url = url;
     // 이 웹페이지가 연결한 다른 웹페이지들의 url들 정의
-    const hrefPattern = /<a href="([^"]+)">/g;
+    const hrefPattern = /<a\shref="([^"]+)">/g;
     const hrefsTags = page.match(hrefPattern) || [];
     this.hrefs = new Set();
     hrefsTags.forEach(hrefTag => {
       const match = hrefTag.match(/<a href="([^"]+)">/);
       return match ? this.hrefs.add(match[1]) : null;
     });
-    // 이 Node의 인덱스 정의
+    // 인덱스 정의
     this.index = index;
     // 기본 점수 정의(문자열이 나타난 횟수)
-    const wordCountsPattern = new RegExp(`(^|[^a-zA-Z])${word}([^a-zA-Z]|$)`, 'gi');
+    const wordCountsPattern = new RegExp(`(?<=^|[^a-zA-Z])${word}(?=[^a-zA-Z]|$)`, 'gi');
     this.baseScore = (page.match(wordCountsPattern) || []).length;
+    console.log(url, this.baseScore);
     // 외부 링크의 수, 링크 점수 정의(기본점수/외부 링크의 갯수)
     this.linkCounts = this.hrefs.size;
+    this.linkScore = 0;
     // 총점 정의
     this.matchingScore = null;
   }
 }
 
-class Graph {
-  constructor() {
-    this.adjacencyMatrix = new Map();
-  }
-
-  addVertex(word, page, index) {
-    const node = new Node(word, page, index);
-    this.adjacencyMatrix.set(node, {});
-  }
-
-  addEdge(fromNode) {
-    // 시작 노드의 href들이 다른 노드의 url과 일치한다면
-    fromNode.hrefs.forEach(href => {
-      [...this.adjacencyMatrix.keys()].forEach(endNode => {
-        if (href === endNode.url) {
-          const mapping = this.adjacencyMatrix.get(fromNode);
-          mapping[endNode.url] = true;
-          this.adjacencyMatrix.set(fromNode, mapping);
-        }
-      });
-    });
-  }
-
-  setScore(node) {
-    if (!this.adjacencyMatrix[node]) {
-      throw new Error('Node does not exist');
-    }
-    let linkScore = 0;
-    for (const fromNode of this.adjacencyMatrix) {
-      if (this.adjacencyMatrix[fromNode][node]) {
-        linkScore += fromNode.baseScore / fromNode.linkCounts;
-      }
-    }
-    node.score = node.baseScore + linkScore;
-  }
-}
-
 function solution(word, pages) {
-  const graph = new Graph();
+  const nodeInfo = {};
   for (let i = 0; i < pages.length; i++) {
-    graph.addVertex(word, pages[i], i);
+    const node = new Node(word, pages[i], i);
+    nodeInfo[node.url] = node;
   }
-  console.log(graph);
-  const keys = [...graph.adjacencyMatrix.keys()];
-  keys.forEach(key => graph.addEdge(key));
+  // linkScore 계산
+  Object.values(nodeInfo).forEach(node => {
+    node.hrefs.forEach(href => {
+      if (nodeInfo[href]) {
+        nodeInfo[href].linkScore += node.baseScore / node.linkCounts;
+      }
+    });
+  });
+  // matchingScore 계산 및 최고점수의 index 리턴
+  let max = 0;
+  let result = 0;
+  Object.values(nodeInfo).forEach(node => {
+    node.matchingScore = node.baseScore + node.linkScore;
+    if (max < node.matchingScore) {
+      max = node.matchingScore;
+      result = node.index;
+    }
+  });
+  return result;
 }
 const word = 'blind';
 const pages = [
-  `<html lang="ko" xml:lang="ko" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <meta charset="utf-8">
-  <meta property="og:url" content="https://a.com"/>
-</head>
-<body>
-Blind Lorem Blind ipsum dolor Blind test sit amet, consectetur adipiscing elit. 
-<a href="https://b.com"> Link to b </a>
-</body>
-</html>`,
+  '<html lang="ko" xml:lang="ko" xmlns="http://www.w3.org/1999/xhtml">\n<head>\n  <meta charset="utf-8">\n  <meta property="og:url" content="https://a.com"/>\n</head>  \n<body>\nBlind Lorem Blind ipsum dolor Blind test sit amet, consectetur adipiscing elit. \n<a href="https://b.com"> Link to b </a>\n</body>\n</html>',
+  '<html lang="ko" xml:lang="ko" xmlns="http://www.w3.org/1999/xhtml">\n<head>\n  <meta charset="utf-8">\n  <meta property="og:url" content="https://b.com"/>\n</head>  \n<body>\nSuspendisse potenti. Vivamus venenatis tellus non turpis bibendum, \n<a href="https://a.com"> Link to a </a>\nblind sed congue urna varius. Suspendisse feugiat nisl ligula, quis malesuada felis hendrerit ut.\n<a href="https://c.com"> Link to c </a>\n</body>\n</html>',
+  '<html lang="ko" xml:lang="ko" xmlns="http://www.w3.org/1999/xhtml">\n<head>\n  <meta charset="utf-8">\n  <meta property="og:url" content="https://c.com"/>\n</head>  \n<body>\nUt condimentum urna at felis sodales rutrum. Sed dapibus cursus diam, non interdum nulla tempor nec. Phasellus rutrum enim at orci consectetu blind\n<a href="https://a.com"> Link to a </a>\n</body>\n</html>',
 ];
-
+const word2 = 'Muzi';
+const pages2 = [
+  '<html lang="ko" xml:lang="ko" xmlns="http://www.w3.org/1999/xhtml">\n<head>\n  <meta charset="utf-8">\n  <meta property="og:url" content="https://careers.kakao.com/interview/list"/>\n</head>  \n<body>\n<a href="https://programmers.co.kr/learn/courses/4673"></a>0muzi0muzi0#!MuziMuzi!)jayg07con&&\n\n</body>\n</html>',
+  '<html lang="ko" xml:lang="ko" xmlns="http://www.w3.org/1999/xhtml">\n<head>\n  <meta charset="utf-8">\n  <meta property="og:url" content="https://www.kakaocorp.com"/>\n</head>  \n<body>\ncon%\tmuzI92apeach0lal&2<a href="https://hashcode.co.kr/tos"></a>\n\n\t^\n</body>\n</html>',
+];
 solution(word, pages);
+solution(word2, pages2);
