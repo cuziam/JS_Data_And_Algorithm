@@ -42,3 +42,32 @@ function solution(begin, end) {
 
   return result;
 }
+//--------------------------------------
+function getMaxDivisor(n) {
+  if (n === 1) {
+    return 0;
+  }
+  let data = [];
+  for (let i = 2; i <= Math.floor(Math.sqrt(n)); i++) {
+    if (n % i === 0) {
+      data.push(i);
+      if (n / i <= 10000000) {
+        return Math.floor(n / i);
+      }
+    }
+  }
+  if (data.length >= 1) {
+    return data[data.length - 1];
+  }
+  return 1;
+}
+
+function solution(begin, end) {
+  let answer = [];
+  for (let i = begin; i <= end; i++) {
+    let maxDivisor = getMaxDivisor(i);
+    answer.push(maxDivisor);
+  }
+
+  return answer;
+}

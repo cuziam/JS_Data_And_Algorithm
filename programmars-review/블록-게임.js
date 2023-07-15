@@ -29,7 +29,8 @@ function solution(board) {
     ],
   ];
   function canBreak(i, j, shapeArr) {
-    return shapeArr.some(shape =>
+    if (board[i][j] === 0) return false;
+    return shapeArr.some((shape, type) =>
       shape.every(([dx, dy]) => {
         const newRow = i + dx;
         const newCol = j + dy;
@@ -46,14 +47,13 @@ function solution(board) {
   // 블록을 하나씩 push down하고 나서, 이게 canBreak를 통과하는지 확인한다.
   // 블록의 원소는 0이 되면 안된다. 한 번 pushDown했을 때 부술 것이 없다면 루프 종료.
   const operationFlag = true;
-  while (operationFlag)
+  for (let row = 0; row < board.length; row++) {
     for (let col = 0; col < board[0].length; col++) {
-      for (let row = 0; row < board.length - 1; row++) {
-        if (board[row][col] === 0 && board[row + 1][col] !== 0) {
-          board[row][col] = board[row + 1][col];
-        }
+      if (canBreak(row, col, shapePos) === true) {
+        console.log(row, col);
       }
     }
+  }
 }
 solution([
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
