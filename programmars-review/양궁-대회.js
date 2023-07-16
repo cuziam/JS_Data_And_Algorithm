@@ -70,7 +70,6 @@ info를 뒤에서부터 순회한다. 큰 점수부터 방문하기 위함이다
 //   }
 //   console.log(lionTable, lionTotal);
 // }
-solution(9, [0, 0, 1, 2, 0, 1, 1, 1, 1, 1, 1]);
 
 // 방법2
 // 모든 점수의 경우의 수를 반환하는 함수
@@ -97,13 +96,31 @@ function generateSubsets(set) {
   return subsets;
 }
 
+// function solution(n, info) {
+//   // 주어진 집합
+//   const set = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+//   // 모든 부분집합 생성
+//   const subsets = generateSubsets(set);
+//   const apeachTotal = info.reduce((acc, cur, idx) => (cur !== 0 ? acc + 10 - idx : acc), 0);
+//   const restArrows = n;
+//   const result = Array(11).fill(0);
+// }
+
 function solution(n, info) {
-  // 주어진 집합
-  const set = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-  // 모든 부분집합 생성
-  const subsets = generateSubsets(set);
-  const apeachTotal = info.reduce((acc, cur, idx) => (cur !== 0 ? acc + 10 - idx : acc), 0);
-  const restArrows = n;
-  const result = Array(11).fill(0);
+  const subsets = [];
+  for (let bitmask = 1; bitmask < 1 << info.length; bitmask++) {
+    const subset = [];
+    const apeachScore = 0;
+    const lionScore = 0;
+    for (let i = 0; i < info.length; i++) {
+      if ((bitmask & (1 << i)) !== 0) {
+        subset.push(10 - i);
+      }
+    }
+    subsets.push(subset);
+    // 라이언이 가진 화살 수로 실제로 얻을 수 있는 점수들인지 확인
+    // 그 때 라이언과 어피치의 점수 계산
+  }
+  console.log(subsets);
 }
 solution(9, [0, 0, 1, 2, 0, 1, 1, 1, 1, 1, 1]);
