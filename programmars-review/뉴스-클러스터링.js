@@ -70,3 +70,39 @@ function solution(str1, str2) {
   console.log(0 / 1);
   return result >= 0 && result <= 65536 ? result : 65536;
 }
+
+// 리팩토링 코드
+function solution(str1, str2) {
+  const arrOfStr1 = splitString(str1);
+  const arrOfStr2 = splitString(str2);
+
+  const counter1 = new Map();
+  const counter2 = new Map();
+
+  arrOfStr1.forEach(ele => {
+    counter1.set(ele, (counter1.get(ele) || 0) + 1);
+  });
+
+  arrOfStr2.forEach(ele => {
+    counter2.set(ele, (counter2.get(ele) || 0) + 1);
+  });
+
+  let intersectionSize = 0;
+  let unionSize = 0;
+
+  for (const [ele, count] of counter1.entries()) {
+    if (counter2.has(ele)) {
+      intersectionSize += Math.min(count, counter2.get(ele));
+    }
+    unionSize += count;
+  }
+
+  for (const [ele, count] of counter2.entries()) {
+    if (!counter1.has(ele)) {
+      unionSize += count;
+    }
+  }
+
+  const result = Math.floor((intersectionSize / unionSize) * 65536);
+  return result >= 0 && result <= 65536 ? result : 65536;
+}
