@@ -21,7 +21,7 @@ function convertTimeToMinutes(time) {
   const tokens = time.split(':');
   return Number(tokens[0]) * 60 + Number(tokens[1]);
 }
-function makeInfo(plan) {
+function getParsedPlan(plan) {
   const [name, timeStr, processTimeStr] = plan;
   const time = convertTimeToMinutes(timeStr);
   const processTime = Number(processTimeStr);
@@ -31,24 +31,25 @@ function makeInfo(plan) {
     endTime: time + processTime,
   };
 }
+
 function solution(plans) {
   const answer = [];
   const stack = [];
   plans.sort((a, b) => a[1].localeCompare(b[1]));
-  console.log(plans);
   for (let i = 1; i < plans.length; i++) {
-    const prevPlan = makeInfo(plans[i - 1]);
-    const curPlan = makeInfo(plans[i]);
+    const prevPlan = getParsedPlan(plans[i - 1]);
+    const curPlan = getParsedPlan(plans[i]);
     if (prevPlan.endTime <= curPlan.startTime) {
       answer.push(prevPlan.name);
       let restTime = curPlan.startTime - prevPlan.endTime;
-      let i = stack.length - 1; // splice때 사용
       while (restTime > 0 && stack.length > 0) {
-        stack[i][1]--;
+        const lastIdx = stack.length - 1;
+        stack[lastIdx][1]--;
         restTime--;
-        if (stack[i][1] === 0) i--;
+        if (stack[lastIdx][1] === 0) {
+          answer.push(stack.pop().name);
+        }
       }
-      answer.push(...stack.splice(i));
     } else {
       stack.push([prevPlan.name, prevPlan.endTime - curPlan.startTime]);
     }
@@ -56,7 +57,11 @@ function solution(plans) {
       answer.push(curPlan.name);
     }
   }
-  return answer.concat(stack.map(ele => ele[0]));
+
+  while (stack.length > 0) {
+    answer.push(stack.pop()[0]);
+  }
+  return answer;
 }
 solution([
   ['science', '12:40', '50'],
@@ -64,3 +69,38 @@ solution([
   ['history', '14:00', '30'],
   ['computer', '12:30', '100'],
 ]);
+
+function solution(plans) {
+  // 시작 시간에 따라 오름차순 정렬
+  plans.sort((a, b) => toMinutes(a[1]) - toMinutes(b[1]));
+
+  let taskStack = []; // 진행 중인 과제를 관리하는 스택
+  let taskCompleted = []; // 완료된 과제를 관리하는 배열
+  let currentTime = 0; // 현재 시간 (분 단위)
+
+  for (let task of plans) {
+    task[1] = toMinutes(task[1]); // 시작 시간을 분 단위로 변환
+    task[2] += task[1]; // 종료 시간을 계산해서 저장
+
+    // 현재 진행 중인 과제가 있는데 새로운 과제의 시작 시간이 도래했다면
+    while (taskStack.length > 0 && task[1] >= taskStack[taskStack.length - 1][2]) {
+      taskCompleted.push(taskStack.pop()[0]); // 완료된 과제를 taskCompleted에 추가
+    }
+
+    // 새로운 과제의 시작 시간이 도래하기 전까지 진행 중인 과제를 처리
+    while (taskStack.length > 0 && task[1] > currentTime) {
+      taskStack[taskStack.length - 1][2] -= task[1] - currentTime; // 남은 과제 시간을 업데이트
+      currentTime = task[1]; // 현재 시간을 업데이트
+    }
+
+    currentTime = task[1]; // 현재 시간을 업데이트
+    taskStack.push(task); // 새로운 과제를 스택에 추가
+  }
+
+  // 남아있는 모든 과제를 완료
+  while (taskStack.length > 0) {
+    taskCompleted.push(taskStack.pop()[0]);
+  }
+
+  return taskCompleted;
+}
