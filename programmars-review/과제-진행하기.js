@@ -21,6 +21,7 @@ function convertTimeToMinutes(time) {
   const tokens = time.split(':');
   return Number(tokens[0]) * 60 + Number(tokens[1]);
 }
+
 function getParsedPlan(plan) {
   const [name, timeStr, processTimeStr] = plan;
   const time = convertTimeToMinutes(timeStr);
@@ -35,32 +36,37 @@ function getParsedPlan(plan) {
 function solution(plans) {
   const answer = [];
   const stack = [];
-  plans.sort((a, b) => a[1].localeCompare(b[1]));
-  for (let i = 1; i < plans.length; i++) {
-    const prevPlan = getParsedPlan(plans[i - 1]);
+
+  // Add an infinite plan at the end
+  plans.push(['infi', '999:59', '999999']);
+
+  // Sort plans by start time in minutes
+  plans.sort((a, b) => convertTimeToMinutes(a[1]) - convertTimeToMinutes(b[1]));
+
+  for (let i = 0; i < plans.length - 1; i++) {
     const curPlan = getParsedPlan(plans[i]);
-    if (prevPlan.endTime <= curPlan.startTime) {
-      answer.push(prevPlan.name);
-      let restTime = curPlan.startTime - prevPlan.endTime;
-      while (restTime > 0 && stack.length > 0) {
-        const lastIdx = stack.length - 1;
-        stack[lastIdx][1]--;
-        restTime--;
-        if (stack[lastIdx][1] === 0) {
-          answer.push(stack.pop().name);
+    const nextPlan = getParsedPlan(plans[i + 1]);
+    let restTime = nextPlan.startTime - curPlan.endTime;
+    if (0 <= restTime) {
+      answer.push(curPlan.name);
+      while (restTime && stack.length) {
+        if (stack[stack.length - 1][1] > restTime) {
+          stack[stack.length - 1][1] -= restTime;
+          restTime = 0;
+        } else {
+          answer.push(stack[stack.length - 1][0]);
+          restTime -= stack.pop()[1];
         }
       }
     } else {
-      stack.push([prevPlan.name, prevPlan.endTime - curPlan.startTime]);
-    }
-    if (i === plans.length - 1) {
-      answer.push(curPlan.name);
+      stack.push([curPlan.name, -restTime]);
     }
   }
 
-  while (stack.length > 0) {
+  while (stack.length) {
     answer.push(stack.pop()[0]);
   }
+
   return answer;
 }
 solution([
