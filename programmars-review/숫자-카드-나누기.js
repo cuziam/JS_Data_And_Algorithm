@@ -37,3 +37,12 @@ function solution(arrayA, arrayB) {
   const result = Math.max(...case1, ...case2);
   return result <= 1 ? 0 : result;
 }
+function solution2(arrayA, arrayB) {
+  const commonDivisorA = findCommonDivisors(arrayA);
+  const commonDivisorB = findCommonDivisors(arrayB);
+
+  const case1 = commonDivisorA.filter(divisor => arrayB.every(ele => ele % divisor !== 0));
+  const case2 = commonDivisorB.filter(divisor => arrayA.every(ele => ele % divisor !== 0));
+  const result = Math.max(...case1, ...case2);
+  return result <= 1 ? 0 : result;
+}
