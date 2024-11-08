@@ -16,3 +16,16 @@ solution([
   ['blue_sunglasses', 'eyewear'],
   ['green_turban', 'headgear'],
 ]);
+
+function solution2(clothes) {
+  const counter = {};
+  clothes.forEach(([, cloth]) => {
+    if (!counter[cloth]) {
+      counter[cloth] = 0;
+    }
+    counter[cloth]++;
+  });
+  console.log(counter);
+  const values = Object.values(counter);
+  return values.reduce((acc, cur) => acc * (cur + 1), 1) - 1;
+}
