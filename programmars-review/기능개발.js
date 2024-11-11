@@ -46,3 +46,27 @@ function solution2(progresses, speeds) {
   }
   return result;
 }
+
+/*
+배포 때 마다 몇 개의 기능이 배포되는 지를 배열형태로 반환해라
+작업의 진도와 속도가 주어진다.
+*/
+function solution3(progresses, speeds) {
+  // 며칠 걸리는 지 계산
+  const costList = progresses.map((progress, idx) => Math.ceil((100 - progress) / speeds[idx]));
+
+  // 결과 계산
+  const results = [0];
+  let maxCost = costList[0];
+  for (let i = 0, j = 0; i < costList.length; i++) {
+    if (costList[i] <= maxCost) {
+      results[j]++;
+    } else {
+      maxCost = costList[i];
+      results[++j] = 1;
+    }
+  }
+
+  console.log(results);
+  return results;
+}
