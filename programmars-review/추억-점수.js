@@ -20,3 +20,13 @@ function solution(name, yearning, photo) {
   const yearningOfName = getYearningOfNames(name, yearning);
   return getYearningOfPhoto(yearningOfName, photo);
 }
+
+// 추억점수가 없다는 것을 주의한다.
+function solution2(name, yearning, photo) {
+  const dict = {};
+  name.forEach((n, i) => {
+    dict[n] = yearning[i];
+  });
+  const result = photo.map((p, _) => p.reduce((acc, person, __) => acc + (!dict[person] ? 0 : dict[person]), 0));
+  return result;
+}
